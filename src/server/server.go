@@ -1,4 +1,3 @@
-package pac_wd_src_server
 /*
 
 
@@ -12,6 +11,8 @@ package pac_wd_src_server
 
 
 */
+
+package server
 
 import(
 	"fmt"

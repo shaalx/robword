@@ -1,5 +1,3 @@
-package pac_wd_src_client
-
 /*
 
 
@@ -13,6 +11,7 @@ package pac_wd_src_client
 
 
 */
+package client
 
 import(
 	"fmt"
