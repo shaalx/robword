@@ -70,7 +70,13 @@ func Sequence(wordset ...string) string {
 	s := get_letter_set(wordset...)
 	sequence := letter_sequence(s)
 	// fmt.Println("................")
-	fmt.Println(sequence)
+	 fmt.Println(sequence)
+	// for i:=0;i<16;i++{
+	// 	fmt.Print(" %v ",sequence[i])
+	// 	if(i%4 == 0){
+	// 		fmt.Println();
+	// 	}
+	}
 	// fmt.Println("END generate sequence.")
 	return sequence
 }
