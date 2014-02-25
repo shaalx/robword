@@ -16,7 +16,7 @@ type Percent map[string]float64
 
 // 从.json中读取频率表，返回Percent的一个实例指针
 func fromJson() *Percent {
-	in := "percentage.json"
+	in := "./sequence/percent/percentage.json"
 	var per Percent
 	data, _ := ioutil.ReadFile(in)
 	json.Unmarshal(data, &per)
