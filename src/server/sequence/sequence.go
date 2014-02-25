@@ -8,10 +8,7 @@ package sequence
 // package main
 
 import (
-<<<<<<< HEAD
 	"./percent"
-=======
->>>>>>> 6bf3c24665b1ae565472e4f99bdf9058556d5a7c
 	"fmt"
 	"math/rand"
 	"strings"
@@ -74,7 +71,6 @@ func Sequence(wordset ...string) string {
 	s := get_letter_set(wordset...)
 	sequence := letter_sequence(s)
 	// fmt.Println("................")
-<<<<<<< HEAD
 	fmt.Println(sequence)
 	// fmt.Println("END generate sequence.")
 	return sequence
@@ -87,18 +83,6 @@ func Sequence_2() string {
 	return Sequence(*strs...)
 }
 
-=======
-	 fmt.Println(sequence)
-	// for i:=0;i<16;i++{
-	// 	fmt.Print(" %v ",sequence[i])
-	// 	if(i%4 == 0){
-	// 		fmt.Println();
-	// 	}
-	}
-	// fmt.Println("END generate sequence.")
-	return sequence
-}
->>>>>>> 6bf3c24665b1ae565472e4f99bdf9058556d5a7c
 func test() {
 	wordset := []string{"worsd", "ssecond"}
 	s := get_letter_set(wordset[0:]...)
@@ -108,7 +92,6 @@ func test() {
 
 }
 
-<<<<<<< HEAD
 func example() {
 	wordset := []string{"worsd", "ssecond"}
 	Sequence(wordset...)
@@ -118,10 +101,4 @@ func example() {
 // 	// test()
 // 	// example()
 // 	Sequence_2()
-=======
-// func main() {
-// 	// test()
-// 	wordset := []string{"worsd", "ssecond"}
-// 	Sequence(wordset...)
->>>>>>> 6bf3c24665b1ae565472e4f99bdf9058556d5a7c
 // }
