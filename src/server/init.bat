@@ -1,2 +1,2 @@
-go run main.go
+go run resultwords.go
 pause
