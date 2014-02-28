@@ -1,6 +1,8 @@
 package main
 
 import (
+	"./db"
+	. "./protocal"
 	"./sequence"
 	"bufio"
 	"encoding/json"
@@ -34,11 +36,11 @@ type Edge struct {
 // 单词词库
 type Ciku map[string]bool
 
-type Resultwords struct {
-	Sequence string //'json:"sequence"'
-	Nun      int
-	Words    *map[string]bool //'json:"words"'
-}
+// type Resultwords struct {
+// 	Sequence string //'json:"sequence"'
+// 	Nun      int
+// 	Words    *map[string]bool //'json:"words"'
+// }
 
 // 全局变量
 var (
@@ -187,8 +189,9 @@ func readChan(q chan bool) *(map[string]bool) {
 	}
 	resultwords.Words = &m
 	resultwords.Nun = len(m)
-	if resultwords.Nun > 35 {
-		resultwords.resultWords_to_json()
+	if resultwords.Nun > 25 {
+		// resultwords.resultWords_to_json()
+		db.Inserting(resultwords)
 	}
 	return &m
 }
@@ -211,13 +214,13 @@ func resultFromJson(in string) {
 	}
 }
 
-// 结果输出
-func (r *Resultwords) resultWords_to_json() {
-	of, _ := os.OpenFile("resutlwords.json", os.O_CREATE|os.O_APPEND, 0644)
-	defer of.Close()
-	b, _ := json.Marshal(resultwords)
-	of.Write(b)
-}
+// // 结果输出
+// func (r *Resultwords) resultWords_to_json() {
+// 	of, _ := os.OpenFile("resutlwords.json", os.O_CREATE|os.O_APPEND, 0644)
+// 	defer of.Close()
+// 	b, _ := json.Marshal(resultwords)
+// 	of.Write(b)
+// }
 
 // 开始
 func start() {
