@@ -15,7 +15,7 @@ var (
 func init() {
 	ch_db = make(chan *sql.DB, 1)
 	// db, err := sql.Open("mysql", "root:1234@tcp(127.0.0.1:3306)/men?charset=utf8&autocommit=true")
-	db, err := sql.Open("mysql", "root:1234@/wordmining")
+	db, err := sql.Open("mysql", "mining:1234@/wordmining")
 	if err != nil {
 		panic(err.Error())
 	}
