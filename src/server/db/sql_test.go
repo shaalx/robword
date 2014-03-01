@@ -1,29 +1,22 @@
 package db
 
 import (
-	"fmt"
-	"sync"
+	// "fmt"
 	"testing"
 )
-
-// Database's connection nums is limitted,so use the Once to run the inits(return a connection to DB) only once.
-func init() {
-	var once sync.Once
-	once.Do(Inits())
-}
 
 func Test_Query(t *testing.T) {
 	command := make([]interface{}, 3)
 	command[0] = "SELECT * FROM wordmining.sequence;"
 	command[1] = "SELECT * FROM wordmining.word_in_stuff"
-	m := Query(command...)
+	Query(command...)
 	// fmt.Println(*m)
-	for i, stuff := range *m {
-		if stuff == nil {
-			continue
-		}
-		fmt.Println(i, stuff)
-	}
+	// for i, stuff := range *m {
+	// 	if stuff == nil {
+	// 		continue
+	// 	}
+	// 	fmt.Println(i, stuff)
+	// }
 	t.Log(" test Query PASS.")
 }
 
@@ -36,13 +29,15 @@ func Test_Excute(t *testing.T) {
 }
 
 func Test_Prepare_excute(t *testing.T) {
-	command := make([]interface{}, 5)
-	command[0] = "INSERT wordmining.word_in_stuff set word=?,id=?"
-	command[1] = "Prepare_moon"
-	command[2] = "4"
-	command[3] = "Prepare_like"
-	command[4] = "4"
-	Prepare_excute(2, command[:]...) //insert data
+	command := make([]interface{}, 8)
+	command[0] = "INSERT wordmining.word_in_stuff set word='mini',id=?"
+	command[1] = "67"
+	command[2] = "67"
+	command[3] = "67"
+	command[4] = "67"
+	command[5] = "67"
+	command[6] = "67"
+	Prepare_excute(1, command[:]...) //insert data
 	t.Log(" test Prepare_excute PASS.")
 }
 

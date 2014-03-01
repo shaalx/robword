@@ -1,16 +1,10 @@
 package db
 
 import (
-	"sync"
 	"testing"
 )
 
-// Database's connection nums is limitted,so use the Once to run the inits(return a connection to DB) only once.
-func init() {
-	var once sync.Once
-	once.Do(Inits())
-}
-
+// Benchmarking
 func Benchmark_Excute(b *testing.B) {
 	b.StopTimer()
 	command := make([]interface{}, 3)
@@ -20,8 +14,7 @@ func Benchmark_Excute(b *testing.B) {
 	// 	Query(command[0])
 	// }
 	/* ERROR 1040：too many connections
-	http://www.2cto.com/database/201112/112738.html
-	*/
+	http://www.2cto.com/database/201112/112738.html*/
 	Excute(command[0])
 	b.Log(" Excute PASS.")
 }

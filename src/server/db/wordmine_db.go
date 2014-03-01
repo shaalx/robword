@@ -5,22 +5,12 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
-	"sync"
 	"time"
 )
-
-func init() {
-	var once sync.Once
-	once.Do(Inits())
-}
 
 func fmt_p() {
 	fmt.Println("...")
 }
-
-// func main() {
-// 	Select()
-// }
 
 func Selecting() *Resultwords {
 	command := make([]interface{}, 10)
@@ -28,18 +18,24 @@ func Selecting() *Resultwords {
 	m := Query(command...)
 	length := len((*m)[0])
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	i := r.Intn(length) + 1
+	i := r.Intn(length)
 	// fmt.Println(*m)
 	// fmt.Println(i)
 	var result Resultwords
+	j := 0
+	var id_target int
 	for stuff, id := range (*m)[0] {
 		// fmt.Println(stuff, id)
-		if id == i {
+		if j == i {
 			result.Sequence = stuff
+			id_target = id
+			break
 		}
+		j++
 	}
-	command[0] = "select * from wordmining.word_in_stuff where id=" + strconv.Itoa(i)
+	command[0] = "select * from wordmining.word_in_stuff where id=" + strconv.Itoa(id_target)
 	m = Query(command...)
+	// fmt.Println(command)
 	w := (make(map[string]bool, 100))
 	result.Words = &w
 	for stuff, _ := range (*m)[0] {
@@ -56,7 +52,6 @@ func Inserting(r Resultwords) {
 	Prepare_excute(1, command...)
 
 	command[0] = "select * from wordmining.sequence where stuff='" + r.Sequence + "'"
-	// fmt.Println(command[0:1])
 	m := Query(command[0:1]...)
 
 	command[0] = "INSERT wordmining.word_in_stuff SET word=?,id=" + strconv.Itoa((*m)[0][r.Sequence])
