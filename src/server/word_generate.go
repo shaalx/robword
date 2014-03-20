@@ -172,8 +172,8 @@ func (t Graph) dfs(e Edge, deep int, s string) {
 
 // 读取result单词通道，最后返回得到的单词
 // q ：结束命令，若q中有数据，表示可以return了
-func readChan(q chan bool) *(map[string]bool) {
-	m := make(map[string]bool, 500)
+func readChan(q chan bool) *(Words) {
+	m := make(Words, 500)
 	quit := false
 	for {
 		select {
@@ -181,15 +181,15 @@ func readChan(q chan bool) *(map[string]bool) {
 			quit = true
 		case r := <-result:
 			fmt.Printf("%16s", r)
-			m[r] = true
+			m[r] = 30
 		}
 		if quit {
 			break
 		}
 	}
 	resultwords.Words = &m
-	resultwords.Nun = len(m)
-	if resultwords.Nun > 25 {
+	resultwords.Num = len(m)
+	if resultwords.Num > 25 {
 		// resultwords.resultWords_to_json()
 		db.Inserting(resultwords)
 	}
@@ -241,8 +241,8 @@ func one_finding(graph *Graph) {
 	var s string
 	qb := make(chan bool, 1)
 	t1 := time.Now()
-	var m map[string]bool
-	go func(m *map[string]bool) {
+	var m Words
+	go func(m *Words) {
 		m = readChan(qb)
 		fmt.Printf("\nEND, %d word found , ", len(*m))
 	}(&m) // go readChan(qb)
