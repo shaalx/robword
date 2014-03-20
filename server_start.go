@@ -197,8 +197,8 @@ func sync() {
 	tick := time.NewTicker(2e9)
 	for {
 		<-tick.C
-		// <-tick.C
-		// <-tick.C
+		<-tick.C
+		<-tick.C
 		// var t int
 		// t = time.Now().Second()
 		// fmt.Println(t)
