@@ -36,10 +36,10 @@ func Selecting() *Resultwords {
 	command[0] = "select * from wordmining.word_in_stuff where id=" + strconv.Itoa(id_target)
 	m = Query(command...)
 	// fmt.Println(command)
-	w := (make(map[string]bool, 100))
+	w := (make(Words, 100))
 	result.Words = &w
 	for stuff, _ := range (*m)[0] {
-		(*result.Words)[stuff] = true
+		(*result.Words)[stuff] = 7 * len(stuff)
 	}
 	// fmt.Println(result, *result.Words)
 	return &result
