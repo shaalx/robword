@@ -10,6 +10,7 @@ import (
 	"labix.org/v2/mgo"
 	// "labix.org/v2/mgo/bson"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -35,6 +36,7 @@ func main() {
 
 	str, err := request.String()
 	checkerr(err)
+	str = setting(str)
 	// fmt.Println(str)
 	storeIntoMongoDB(str)
 
@@ -64,6 +66,17 @@ func main() {
 // 	// fmt.Println(s)
 // 	fmt.Println(n, " affected.")
 // }
+func setting(s string) string {
+	// 字符替换方案，为了减少耦合度，只替换第一个“{”
+	sTime := time.Now().String()
+	// fmt.Println(str)
+	sArrary := []string{"{\"date\":\"", sTime, "\","}
+	sReplace := strings.Join(sArrary, " ")
+	// strings.Join([]string{"\"date\":",str,},",\"pageType\": \"software\""},"")
+	s = strings.Replace(s, "{", sReplace, 1)
+	// fmt.Println(s)
+	return s
+}
 
 func checkerr(err error) {
 	if err != nil {
@@ -73,8 +86,25 @@ func checkerr(err error) {
 }
 
 type Data struct {
-	Value interface{} `json:"value"`
-	Date  time.Time   `json:"date"`
+	Value interface{} `json:"value"` //抓取的数据
+	Date  time.Time   `json:"date"`  //抓取动作的时间
+}
+
+func setString(s string) interface{} {
+	// 嵌套一层，将数据放进一个value中
+	var data Data
+	data.Value = s
+	err := json.Unmarshal([]byte(s), &data.Value)
+	checkerr(err)
+	data.Date = time.Now()
+	// fmt.Println(data)
+	d, err := json.Marshal(data)
+	checkerr(err)
+	var v interface{}
+	err = json.Unmarshal(d, &v)
+	checkerr(err)
+	fmt.Println(v)
+	return v
 }
 
 func storeIntoMongoDB(s string) {
@@ -88,17 +118,19 @@ func storeIntoMongoDB(s string) {
 	// Collection
 	c := session.DB("appstore").C("app")
 	c.Count()
-	var data Data
+	// var data Data
 	// data.Value = s
-	json.Unmarshal([]byte(s), &data.Value)
-	data.Date = time.Now()
-	fmt.Println(data)
-	d, err := json.Marshal(data)
-	checkerr(err)
+	// err = json.Unmarshal([]byte(s), &data.Value)
+	// checkerr(err)
+	// data.Date = time.Now()
+	// // fmt.Println(data)
+	// d, err := json.Marshal(data)
+	// checkerr(err)
 	var v interface{}
-	json.Unmarshal(d, &v)
-	fmt.Println(v)
-	c.Insert(v)
-
-	// fmt.Println("inter All.")
+	err = json.Unmarshal([]byte(s), &v)
+	checkerr(err)
+	// fmt.Println(v)
+	err = c.Insert(v)
+	checkerr(err)
+	fmt.Println("insert OK.")
 }
