@@ -10,6 +10,7 @@ import (
 	"labix.org/v2/mgo"
 	// "labix.org/v2/mgo/bson"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -36,9 +37,9 @@ func main() {
 
 	str, err := request.String()
 	checkerr(err)
-	str = setting(str)
+	setString(str)
 	// fmt.Println(str)
-	storeIntoMongoDB(str)
+	// storeIntoMongoDB(str)
 
 	// req_json := gojson.Json(str)
 	// urls := []string{"storePlatformData", "product-dv-product", "results", "839452750"}
@@ -68,11 +69,14 @@ func main() {
 // }
 func setting(s string) string {
 	// 字符替换方案，为了减少耦合度，只替换第一个“{”
-	sTime := time.Now().String()
-	// fmt.Println(str)
-	sArrary := []string{"{\"date\":\"", sTime, "\","}
+	/*当地时间格式：2014-06-27 00:00:00  时间戳： 1403798400*/
+	now := time.Now()
+	timeUnix := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local).Unix()
+	sTime := strconv.FormatInt(timeUnix, 10)
+
+	// 替换json的 { 为 { "date": "1403798400",
+	sArrary := []string{"{\"date\":", sTime, ","}
 	sReplace := strings.Join(sArrary, " ")
-	// strings.Join([]string{"\"date\":",str,},",\"pageType\": \"software\""},"")
 	s = strings.Replace(s, "{", sReplace, 1)
 	// fmt.Println(s)
 	return s
@@ -86,17 +90,25 @@ func checkerr(err error) {
 }
 
 type Data struct {
-	Value interface{} `json:"value"` //抓取的数据
-	Date  time.Time   `json:"date"`  //抓取动作的时间
+	Value  interface{} `json:"value"`  //抓取的数据
+	Date   int64       `json:"date"`   //抓取动作的时间
+	Parsed bool        `json:"parsed"` //是否已经解析访问过
 }
 
+/*存入数据库mongoDB，有嵌套*/
 func setString(s string) interface{} {
 	// 嵌套一层，将数据放进一个value中
 	var data Data
 	data.Value = s
 	err := json.Unmarshal([]byte(s), &data.Value)
 	checkerr(err)
-	data.Date = time.Now()
+
+	/*时间戳*/
+	now := time.Now()
+	timeUnix := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local).Unix()
+	// sTime := strconv.FormatInt(timeUnix, 10)
+	data.Date = timeUnix
+	data.Parsed = false
 	// fmt.Println(data)
 	d, err := json.Marshal(data)
 	checkerr(err)
@@ -104,9 +116,22 @@ func setString(s string) interface{} {
 	err = json.Unmarshal(d, &v)
 	checkerr(err)
 	fmt.Println(v)
+
+	session, err := mgo.Dial("192.168.199.240:27017")
+	checkerr(err)
+	defer session.Close()
+	session.SetMode(mgo.Monotonic, true)
+	c := session.DB("appstore").C("app")
+	c.Count()
+	err = c.Insert(v)
+	checkerr(err)
+	fmt.Println("insert OK.")
 	return v
 }
 
+/*存储字符串s到mongoDB中
+需要将该字符串json化（使用json包的）
+*/
 func storeIntoMongoDB(s string) {
 	session, err := mgo.Dial("192.168.199.240:27017")
 	// session, err := mgo.Dial("127.0.0.0:27017")
